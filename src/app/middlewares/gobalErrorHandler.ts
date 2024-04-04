@@ -3,15 +3,15 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
-import config from '../../config';
 import { ZodError } from 'zod';
+import config from '../../config';
 import { IGenericErrorMessages } from '../../interfaces/error';
 
-import handleZodError from '../../error/handleZodError';
-import handleValidationError from '../../error/handleValidationError';
-import handleClientError from '../../error/handleClientError';
+import { Prisma } from '@prisma/client';
 import ApiError from '../../error/ApiError';
-import { PrismaClient } from '@prisma/client';
+import handleClientError from '../../error/handleClientError';
+import handleValidationError from '../../error/handleValidationError';
+import handleZodError from '../../error/handleZodError';
 
 const globalErrorHandler: ErrorRequestHandler = (
   error: any,
@@ -29,7 +29,7 @@ const globalErrorHandler: ErrorRequestHandler = (
   let message = 'Something went wrong !';
   let errorMessages: IGenericErrorMessages[] = [];
 
-  if (error instanceof PrismaClient.PrismaClientValidationError) {
+  if (error instanceof Prisma.PrismaClientValidationError) {
     const simplifiedError = handleValidationError(error);
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;
@@ -39,7 +39,7 @@ const globalErrorHandler: ErrorRequestHandler = (
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;
     errorMessages = simplifiedError.errorMessages;
-  } else if (error instanceof PrismaClient.PrismaClientKnownRequestError) {
+  } else if (error instanceof Prisma.PrismaClientKnownRequestError) {
     const simplifiedError = handleClientError(error);
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;
