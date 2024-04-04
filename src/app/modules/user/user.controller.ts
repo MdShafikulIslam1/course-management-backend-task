@@ -2,9 +2,9 @@ import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { UserService } from './user.service';
 
-const getProfile = catchAsync(async (req, res) => {
+const viewProfile = catchAsync(async (req, res) => {
   const userId = req.user?.id;
-  const result = await UserService.getProfile(userId);
+  const result = await UserService.viewProfile(userId);
   sendResponse(res, {
     statusCode: 201,
     success: true,
@@ -13,4 +13,14 @@ const getProfile = catchAsync(async (req, res) => {
   });
 });
 
-export const UserController = { getProfile };
+const updateProfile = catchAsync(async (req, res) => {
+  const result = await UserService.updateProfile(req.params.id, req.body);
+  sendResponse(res, {
+    statusCode: 201,
+    success: true,
+    message: 'Profile data update successfully',
+    data: result,
+  });
+});
+
+export const UserController = { viewProfile, updateProfile };

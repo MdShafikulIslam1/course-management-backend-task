@@ -6,9 +6,11 @@ import { UserController } from './user.controller';
 const router = Router();
 
 router.get(
-  '/profile',
+  '/view-profile',
   Auth(UserRole.user, UserRole.super_admin),
-  UserController.getProfile
+  UserController.viewProfile
 );
+
+router.patch('/update-profile/:id', UserController.updateProfile);
 
 export const UserRouter = router;
