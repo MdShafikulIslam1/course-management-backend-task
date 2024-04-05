@@ -14,14 +14,15 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(uuid())
+  id           String       @id @default(uuid())
   name         String
-  email        String   @unique
+  email        String       @unique
   password     String
-  role         UserRole @default(user)
+  role         UserRole     @default(user)
   profilePhoto String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt()
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt()
+  enrollments  Enrollment[]
 
   @@map("users")
 }
@@ -40,15 +41,31 @@ model Course {
   price                   Float?
   imageUrl                String?
 
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  enrollments Enrollment[]
+
+  @@unique([title, categoryId, level])
+  @@map("courses")
+}
+
+model Enrollment {
+  id       String @id @default(uuid())
+  userId   String
+  user     User   @relation(fields: [userId], references: [id])
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id])
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@map("courses")
+  @@unique([userId, courseId])
+  @@map("enrollments")
 }
 
 model Category {
   id    String @id @default(uuid())
-  title String
+  title String @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
